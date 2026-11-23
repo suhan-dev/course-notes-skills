@@ -1,0 +1,37 @@
+%% ============================================================================
+\probchapter{정상 상태}{노트 \S3}
+
+%% ----------------------------------------------------------------------------
+\problem{막을 지나는 흐름}{새 문제}{\S3}
+
+두께 $L$ 인 막이 잘 섞인 두 용액을 가른다. 막 안의 농도는 확산 방정식을
+따르고, $c(0,t)=c_0$ 와 $c(L,t)=c_L$ 은 고정되어 있다.
+\begin{parts}
+  \item 정상 상태의 분포 $c(x)$ 를 구하라.
+  \item 정상 상태의 흐름 $J=-D\,\partial c/\partial x$ 를 구하라.
+  \item $D=1.0\times10^{-9}\,\mathrm{m^2\,s^{-1}}$,
+        $L=100\,\mu\mathrm m$, $c_0=1\,\mathrm{mol\,m^{-3}}$, $c_L=0$ 일 때
+        $J$ 의 값을 구하라.
+\end{parts}
+
+\solution
+
+\solpart{a}{분포}
+정상 상태에서는 $\partial c/\partial t=0$ 이므로 확산 방정식에서
+$\d^2c/\d x^2=0$ 만 남는다. 분포는 직선이다. 두 경계값에 맞추면
+\begin{equation}
+  \ans{c(x)=c_0+(c_L-c_0)\,\frac xL}.
+\end{equation}
+
+\solpart{b}{흐름}
+\begin{equation}
+  J=-D\,\dv{c}{x}=\ans{D\,\frac{c_0-c_L}{L}}
+\end{equation}
+이고 어느 $x$ 에서나 같다. 정상 상태라면 어디에도 물질이 쌓이지 않아야 하므로
+당연하다. 흐름은 농도가 높은 쪽에서 낮은 쪽으로 간다.
+
+\solpart{c}{값}
+\begin{equation}
+  J=\frac{(1.0\times10^{-9}\,\mathrm{m^2\,s^{-1}})(1\,\mathrm{mol\,m^{-3}})}{1.0\times10^{-4}\,\mathrm m}
+  =\ans{1.0\times10^{-5}\,\mathrm{mol\,m^{-2}\,s^{-1}}}.
+\end{equation}

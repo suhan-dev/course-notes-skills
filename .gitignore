@@ -1,0 +1,20 @@
+# build output and local tools — never committed
+build/
+node_modules/
+__pycache__/
+*.pyc
+.DS_Store
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+
+# no PDFs (course material and build output)
+*.[pP][dD][fF]
+
+# real names for the privacy scan: never committed
+tools/private-patterns.txt

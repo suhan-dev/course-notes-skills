@@ -1,0 +1,111 @@
+%% ============================================================================
+%%  problems/common.tex --- shared by problems-en.tex and problems-ko.tex
+%%
+%%  The problem book alternates problem and solution: every problem starts a
+%%  new page, and its solution starts the next new page.  The web viewer
+%%  (pdf-notes-viewer, DOCS entry with solutions:true) covers the solution
+%%  pages until they are tapped.  It finds them through named destinations
+%%  that \problem and \solution put into the PDF:
+%%      pb.prob.<n.m>   where problem n.m starts
+%%      pb.sol.<n.m>    where its solution starts
+%%      pb.end          where back matter after the last solution starts
+%%  A solution is covered from its pb.sol page up to the page before the next
+%%  mark, or to the last page.  Anything placed after the last solution (an
+%%  appendix, say) must therefore start on a new page with \pbmark{end}.
+%%  "pb" must equal MARK in the viewer's configuration block.
+%%
+%%  The labels chapstart:<n>, probstart:<n.m>, solstart:<n.m> are for
+%%  tools/probcheck.py, which checks that the two editions match.
+%%
+%%  Numbering: chapters use the section counter, problems the subsection
+%%  counter, so bookmarks read "2 Steady states" and "2.1 A membrane (...)":
+%%  the viewer keys on that leading number to keep your place across the
+%%  EN/KO switch.  Both editions must carry the same chapters and problems in
+%%  the same order.  Equations are numbered afresh in every problem.
+%%
+%%  Each main file defines the words used below:
+%%    \ProbWord \SolWord \SourceWord \NotesWord
+%%  Requires the course style (coursenotes.sty: hyperref, enumitem, fancyhdr).
+%% ============================================================================
+
+%% ---- notation shared by the problems (add the course's own here) ----------
+\newcommand{\ans}[1]{\boxed{\;#1\;}}
+\newcommand{\e}{\mathrm{e}}
+
+%% ---- problem parts ---------------------------------------------------------
+\newenvironment{parts}%
+  {\begin{enumerate}[label=(\alph*),leftmargin=2.2em,itemsep=4pt,topsep=4pt]}%
+  {\end{enumerate}}
+%% a part of a solution: \solpart{a}{Short title}
+\newcommand{\solpart}[2]{%
+  \par\addvspace{9pt}\noindent\textbf{(#1)\enspace#2}\par\nobreak\vspace{2pt}}
+
+%% ---- equations restart in every problem ------------------------------------
+\makeatletter
+\@addtoreset{equation}{subsection}
+\renewcommand{\theHequation}{\thesubsection.\arabic{equation}}
+\makeatother
+
+%% ---- chapters, problems, solutions ----------------------------------------
+\makeatletter
+\newif\ifpb@afterchap
+\def\pb@probtitle{}
+
+%% \pbmark{name}: a named destination pb.<name> on the current page, for the
+%% web viewer (see the top of this file).  Same mechanism as \phantomsection.
+\newcommand{\pbmark}[1]{\Hy@raisedlink{\hyper@anchorstart{pb.#1}\hyper@anchorend}}
+
+%% \probchapter{Title}{notes range}
+\newcommand{\probchapter}[2]{%
+  \clearpage
+  \refstepcounter{section}%
+  \phantomsection
+  \addcontentsline{toc}{section}{\protect\numberline{\thesection}#1}%
+  \edef\pb@id{\thesection}%
+  \label{chapstart:\pb@id}%
+  \markright{#1}%
+  \vspace*{-0.2\baselineskip}%
+  \noindent\rule{\textwidth}{1.1pt}\par\nobreak\vspace{7pt}%
+  \noindent{\Large\bfseries\thesection\quad #1}\par\nobreak\vspace{3pt}%
+  \noindent{\small\itshape #2}\par\nobreak\vspace{5pt}%
+  \noindent\rule{\textwidth}{0.4pt}\par\nobreak
+  \vspace{16pt}%
+  \global\pb@afterchaptrue}
+
+%% \problem{Title}{source}{related notes}
+\newcommand{\problem}[3]{%
+  \ifpb@afterchap\global\pb@afterchapfalse\else\clearpage\fi
+  \refstepcounter{subsection}%
+  \gdef\pb@probtitle{#1}%
+  \phantomsection
+  \addcontentsline{toc}{subsection}%
+    {\protect\numberline{\thesubsection}#1\texorpdfstring{\ \ {\normalfont\small(#2)}}{ (#2)}}%
+  \edef\pb@id{\thesubsection}%
+  \label{probstart:\pb@id}%
+  \pbmark{prob.\pb@id}%
+  \markright{\ProbWord\ \thesubsection}%
+  \noindent{\large\bfseries\ProbWord\ \thesubsection\quad #1}\par\nobreak
+  \vspace{3pt}%
+  \noindent{\small\SourceWord: #2\hfill\NotesWord: #3}\par\nobreak
+  \vspace{2pt}\noindent\rule{\textwidth}{0.4pt}\par\nobreak
+  \vspace{6pt}}
+
+%% \solution   (starts the solution of the current problem on a new page)
+\newcommand{\solution}{%
+  \clearpage
+  \phantomsection
+  \edef\pb@id{\thesubsection}%
+  \label{solstart:\pb@id}%
+  \pbmark{sol.\pb@id}%
+  \markright{\SolWord\ \thesubsection}%
+  \noindent{\large\bfseries\SolWord\ \thesubsection\quad\pb@probtitle}\par\nobreak
+  \vspace{2pt}\noindent\rule{\textwidth}{0.4pt}\par\nobreak
+  \vspace{6pt}}
+
+%% the running head: title on the left, the current problem/solution on the right
+\newcommand{\probheads}{%
+  \fancyhead[R]{\small\rightmark}}
+\makeatother
+
+%% ---- table of contents: problems are listed under their chapter -------------
+\setcounter{tocdepth}{2}

@@ -1,0 +1,37 @@
+%% figures.tex --- every diagram of the notes, shared by both editions.
+%%
+%% LANGUAGE-NEUTRAL ON PURPOSE.  No word is typed inside a figure: every label
+%% goes through a \lbl... macro that each main file defines in its preamble
+%% (English in notes-en.tex, Korean in notes-ko.tex).  The same file therefore
+%% draws the same picture with the same number in both editions.  Never fork a
+%% figure per language; add the new word to BOTH preambles instead.  Only the
+%% \caption text lives in the language files.
+%%
+%% Black and grey only; curves are told apart by line style (solid, dashed,
+%% dotted), never by colour.  Plotted curves are computed from the formula the
+%% caption states, not sketched by hand.
+%%
+%% One macro per figure, \fig<Name>, in the order the figures first appear.
+%% Large generated data (simulation snapshots, many-point curves) goes in its
+%% own macro written by a script; say which script in a comment above it.
+
+%% ===== (1) a diffusing profile spreads like a Gaussian =====================
+%% c(x,t) = exp(-x^2/4Dt) / sqrt(4 pi D t), drawn for Dt = 0.25, 1, 4.
+\newcommand{\figDiffusion}{%
+\begin{tikzpicture}[x=0.9cm,y=4.2cm,>=Stealth]
+  \draw[->] (-4.3,0) -- (4.5,0) node[right] {\lblPosition};
+  \draw[->] (0,0) -- (0,1.32) node[left] {\lblConcentration};
+  \foreach \x in {-4,-2,2,4} \draw (\x,0) -- (\x,-0.02) node[below] {\footnotesize $\x$};
+  \draw[thick,samples=120,domain=-4.2:4.2]
+    plot (\x,{exp(-\x*\x/1.0)/sqrt(3.14159265*1.0)});
+  \draw[thick,dashed,samples=120,domain=-4.2:4.2]
+    plot (\x,{exp(-\x*\x/4.0)/sqrt(3.14159265*4.0)});
+  \draw[thick,dotted,samples=120,domain=-4.2:4.2]
+    plot (\x,{exp(-\x*\x/16.0)/sqrt(3.14159265*16.0)});
+  \node[anchor=west,font=\footnotesize] at (0.55,1.05) {$Dt=0.25$};
+  \node[anchor=west,font=\footnotesize] at (1.25,0.36) {$Dt=1$};
+  \node[anchor=west,font=\footnotesize] at (2.6,0.17) {$Dt=4$};
+  \node[font=\footnotesize,align=center] at (-3.0,0.95) {\lblSpreads};
+\end{tikzpicture}}
+
+\endinput

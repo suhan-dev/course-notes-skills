@@ -1,0 +1,10 @@
+# Copy to tools/private-patterns.txt (git-ignored) and list everything real that must never be published,
+# one extended regex per line: the student's names and logins, instructors and TAs, the school and its LMS,
+# course repositories and channels, device and account names. bash tools/privacy-scan.sh then fails if any
+# of them appears in a tracked file. Example (placeholders):
+Firstname Lastname
+firstname-login
+Professor Name
+school-short-name
+course-repo-2027-2
+firstname-laptop

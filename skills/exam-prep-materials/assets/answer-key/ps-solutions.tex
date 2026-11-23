@@ -1,0 +1,46 @@
+%% ============================================================================
+%%  Problem Set <n> --- solutions.  English, in the notes' style.
+%%  Build next to the problem set, with the notes' style on the search path:
+%%      TEXINPUTS=../notes: latexmk -xelatex PS<n>-solutions.tex
+%%
+%%  House rules for a hand-in answer sheet (see references/answer-keys-and-exams.md):
+%%   * Working only: no conventions table, no "[Notes §3]" citations, no side
+%%     remarks, no restating the whole problem.
+%%   * Every step a grader could mark down is justified: state assumptions
+%%     (quasi-static, independent steps, ...), derive any formula you use that
+%%     the course did not hand out, use every given condition, and add a one-line
+%%     check where an answer might look suspicious (a limit, a sign, units).
+%%   * Notation follows the lecture notes; say so once if the problem set's
+%%     notation differs (e.g. epsilon vs eta).
+%% ============================================================================
+\documentclass[11pt]{article}
+\usepackage[english]{coursenotes}
+
+\coursename{Sample Course}
+\term{Fall 2027}
+\lectitle{Problem Set 1 --- Solutions}
+\lecdate{Due 18 September 2027}
+\notesby{Student name}
+
+\newcommand{\ans}[1]{\boxed{\;#1\;}}
+%% one problem: \prob{1-1}{short title}
+\newcommand{\prob}[2]{\section*{Problem #1\quad\normalfont #2}}
+%% one part: \part{a}
+\renewcommand{\part}[1]{\par\addvspace{6pt}\noindent\textbf{(#1)}\enspace\ignorespaces}
+
+\begin{document}
+\makelecheader
+
+\prob{1-1}{A biased walk}
+\part{a}
+A single step has $\avg{s}=a(p-q)=a(2p-1)$ and $\avg{s^2}=a^2$, so
+$\operatorname{Var}s=a^2[1-(2p-1)^2]=4a^2pq$.
+
+\part{b}
+Means always add; the steps are independent, so their variances add as well:
+\[
+  \ans{\avg{x_n}=na(2p-1),\qquad \operatorname{Var}x_n=4na^2pq}.
+\]
+Check: for $p=\tfrac12$ this is the unbiased walk, $\avg{x_n^2}=na^2$.
+
+\end{document}

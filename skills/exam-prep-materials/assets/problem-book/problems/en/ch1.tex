@@ -1,0 +1,74 @@
+%% ============================================================================
+\probchapter{Random walks and diffusion}{Notes \S1--\S2}
+
+%% ----------------------------------------------------------------------------
+\problem{A biased walk}{New}{\S1}
+
+A walker on a line takes independent steps $s_k$, each $+a$ with probability
+$p$ and $-a$ with probability $q=1-p$. After $n$ steps it is at
+$x_n=\sum_{k=1}^n s_k$.
+\begin{parts}
+  \item Find the mean and the variance of a single step.
+  \item Find $\avg{x_n}$ and the variance of $x_n$.
+  \item The drift $\avg{x_n}$ grows like $n$, the spread like $\sqrt n$.
+        For $p=0.6$, after how many steps does the drift exceed the
+        standard deviation?
+\end{parts}
+
+\solution
+
+\solpart{a}{One step}
+\begin{equation}
+  \avg{s}=a\,p-a\,q=a(2p-1),\qquad \avg{s^2}=a^2 ,
+\end{equation}
+so
+\begin{equation}
+  \operatorname{Var}s=\avg{s^2}-\avg{s}^2=a^2\bigl[1-(2p-1)^2\bigr]
+  =a^2\bigl[(1-2p+1)(1+2p-1)\bigr]=\ans{4a^2pq}.
+\end{equation}
+Check: $p=\tfrac12$ gives $a^2$, the unbiased walk; $p=1$ gives $0$, a
+deterministic walk.
+
+\solpart{b}{After $n$ steps}
+Means add for any steps; variances add because the steps are independent:
+\begin{equation}
+  \ans{\avg{x_n}=na(2p-1),\qquad \operatorname{Var}x_n=4na^2pq}.
+\end{equation}
+
+\solpart{c}{Drift against spread}
+The drift exceeds the standard deviation when
+\begin{equation}
+  na\,\lvert 2p-1\rvert>2a\sqrt{npq}
+  \iff n>\frac{4pq}{(2p-1)^2}.
+\end{equation}
+For $p=0.6$: $4pq=0.96$ and $(2p-1)^2=0.04$, so $n>24$:
+\ans{\text{from the 25th step on}}.
+
+%% ----------------------------------------------------------------------------
+\problem{How long does diffusion take?}{New}{\S2}
+
+A small molecule in water has $D=1.0\times10^{-9}\,\mathrm{m^2\,s^{-1}}$.
+Use the one-dimensional result $\avg{x^2}=2Dt$.
+\begin{parts}
+  \item How long until the root-mean-square displacement is $1\,\mathrm{mm}$?
+  \item How long does it take to cross a cell, $10\,\mu\mathrm{m}$?
+  \item Explain the ratio of the two times in one line.
+\end{parts}
+
+\solution
+
+\solpart{a}{One millimetre}
+\begin{equation}
+  t=\frac{\avg{x^2}}{2D}=\frac{(10^{-3}\,\mathrm m)^2}{2\times10^{-9}\,\mathrm{m^2\,s^{-1}}}
+  =\ans{500\,\mathrm s}\approx 8\,\mathrm{min}.
+\end{equation}
+
+\solpart{b}{Ten micrometres}
+\begin{equation}
+  t=\frac{(10^{-5}\,\mathrm m)^2}{2\times10^{-9}\,\mathrm{m^2\,s^{-1}}}
+  =\ans{0.05\,\mathrm s}.
+\end{equation}
+
+\solpart{c}{The ratio}
+The time grows as the square of the distance: $100$ times the distance takes
+$100^2=10^4$ times as long, and $500\,\mathrm s/0.05\,\mathrm s=10^4$.

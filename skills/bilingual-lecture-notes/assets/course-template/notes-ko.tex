@@ -1,0 +1,129 @@
+% !TEX program = xelatex
+% !TEX encoding = UTF-8 Unicode
+%
+% <과목 이름> --- 강의노트 국문판.  하나의 연속 문서이고 주제순이다.
+% 영문판과 함께 쓰는 설정은 전부 coursenotes.sty 와 figures.tex 에 있다.
+% 빌드: ./build.sh   (latexmk -xelatex, 목차 때문에 세 번)
+%
+% 강의를 더할 때의 규칙 (notes-en.tex 머리의 목록과 같다):
+%   1. 새 내용은 주제가 맞는 대단원에 넣는다.  정말로 새 주제일 때만
+%      \partdivider 로 새 대단원을 연다.
+%   2. 절 번호는 대단원과 무관하게 이어진다.  다시 1부터 세지 않고, 이미 게시한
+%      절의 번호는 바꾸지 않는다 (사이트 뷰어가 그 번호를 쓴다).
+%   3. 그 강의의 새 내용이 시작되는 자리에 \lecturebreak[YYYY-MM-DD]{제N강},
+%      바로 밑에 \sourcenote{...}, 그리고 앞부분 회차표에 한 줄을 더한다.
+%   4. 절·식·그림·정리류 환경과 모든 \label 은 두 판에서 순서와 이름이 같다.
+%   5. \lecdate 와 "강의의 흐름" 목록을 고친다.
+%   6. \eqref/\ref 뒤의 조사는 번호를 읽는 소리를 따른다
+%      (tools/ko-particles-check.py 로 확인).
+%
+\documentclass[11pt]{article}
+\usepackage[korean]{coursenotes}
+
+%% 그림 속 낱말 (영문판에도 같은 매크로가 있다)
+\newcommand{\lblPosition}{위치 $x$}
+\newcommand{\lblConcentration}{$c(x,t)$}
+\newcommand{\lblSpreads}{폭은 $\sqrt{Dt}$에\\비례해 커진다}
+\input{figures}
+
+\coursename{예시 과목}
+\term{2027년 2학기}
+\lectitle{강의노트, 제1--2강}
+\lecdate{2027년 9월 6일 기준}
+\notesby{수강생}
+
+\begin{document}
+\makelecheader
+
+% ===================================================================== 앞부분
+\section*{수업 정보}
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=3pt]
+  \item 월·수 수업. 중간·기말고사 날짜는 강의계획서에 공지된 대로.
+  \item 성적 산출과 교재는 강의계획서에 공지된 대로.
+\end{itemize}
+
+\section*{강의의 흐름}
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=3pt]
+  \item 제1부 --- 무작위 걷기와 확산 \hfill {\small[진행 중]}
+  \item 제2부 --- 정상 상태 \hfill {\small[예정: 제2강에서 예고]}
+\end{itemize}
+
+\section*{이 노트의 구성}
+노트는 날짜순이 아니라 주제순이다. 오른쪽 끝에 강의 번호가 붙은 가는 선은 그
+강의가 시작한 자리이고, 그 밑의 회색 줄은 그 강의의 정리가 무엇에 기대는지
+적는다. 정리하면서 덧붙인 내용(빠진 단계, 검산)은 여백에 $\blacktriangleright$
+표시를 단 작은 글씨로 넣었다.
+
+\section*{회차표}
+{\small
+\begin{longtable}{@{}l l l r@{}}
+\toprule
+강의 & 날짜 & 절 & 쪽\\
+\midrule
+\endhead
+제1강 & 2027.\,09.\,01 (수) & \S\ref{sec:walk} & \pageref{lec:2027-09-01}\\
+제2강 & 2027.\,09.\,06 (월) & \S\ref{sec:diffusion} & \pageref{lec:2027-09-06}\\
+\bottomrule
+\end{longtable}}
+
+{\small\tableofcontents}
+
+% ===================================================================== 제1부
+\partdivider{제1부 --- 무작위 걷기와 확산}
+
+\lecturebreak[2027-09-01]{제1강}
+\sourcenote{유인물 1과 녹음}
+\section{무작위 걷기}\label{sec:walk}
+
+\begin{definition}\label{def:walk}
+직선 위의 \keyword{무작위 걷기}는 위치의 열 $x_n = \sum_{k=1}^{n} s_k$ 이고,
+각 걸음 $s_k=\pm a$ 는 서로 독립이며 두 값이 나올 확률이 같다.
+\end{definition}
+
+걸음 하나의 평균은 $0$, 분산은 $a^2$ 이고 독립인 걸음의 분산은 더해지므로
+\begin{equation}\label{eq:var}
+  \avg{x_n} = 0, \qquad \avg{x_n^2} = n a^2 .
+\end{equation}
+
+\scribe{둘째 결과에는 걸음끼리 상관이 없다는 것만 필요하다.
+$j\neq k$ 이면 $\avg{s_j s_k}=0$ 이어서 $\avg{x_n^2}$ 의 교차항이 모두 사라진다.}
+
+% ---------------------------------------------------------------------------
+\lecturebreak[2027-09-06]{제2강}
+\sourcenote{유인물 2}
+\section{확산 방정식}\label{sec:diffusion}
+
+걸음 사이 시간을 $\tau$ 로 두고 $t=n\tau$, $D=a^2/2\tau$ 라 쓰면 식~\eqref{eq:var}은
+$\avg{x^2}=2Dt$ 가 되고, 연속 극한에서 걷는 입자의 밀도는
+\begin{equation}\label{eq:diffeq}
+  \pd{c}{t} = D\,\frac{\partial^2 c}{\partial x^2}
+\end{equation}
+를 따른다. 모든 입자가 원점에서 출발할 때 식~\eqref{eq:diffeq}의 해는
+\begin{equation}\label{eq:gauss}
+  c(x,t) = \frac{1}{\sqrt{4\pi D t}}\, e^{-x^2/4Dt}
+\end{equation}
+이고, 그림~\ref{fig:diffusion}에 그렸다.
+
+\begin{figure}[ht]
+  \centering
+  \figDiffusion
+  \caption{$Dt=0.25$, $1$, $4$ 일 때의 분포 \eqref{eq:gauss} (실선, 파선, 점선).
+  넓이는 $1$ 로 그대로이고 폭은 $\sqrt{2Dt}$ 로 커진다.}
+  \label{fig:diffusion}
+\end{figure}
+
+\begin{caution}[두 가지 약속]\label{caut:dconv}
+$D=a^2/\tau$ 로 정의해 $\avg{x^2}=Dt$ 로 쓰는 책도 있다. 식~\eqref{eq:diffeq}와
+섞어 쓰기 전에 어느 약속인지 확인한다.
+\end{caution}
+
+% ===================================================================== 제2부
+\partdivider{제2부 --- 정상 상태}
+
+\lecturebreak[2027-09-08]{예정}
+\section{정상 상태와 경계 조건}\label{sec:steady}
+
+게시된 개요로 수업 전에 미리 쓴 절이다. 수업이 끝나면 칠판과 대조한다.
+
+\phantomsection\label{lec:end}
+\end{document}

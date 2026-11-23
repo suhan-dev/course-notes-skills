@@ -1,0 +1,117 @@
+%% ---------------------------------------------------------------------------
+%%  tallproblems.sty --- a practice-problem book with ONE SHEET PER PROBLEM and
+%%  ONE SHEET PER SOLUTION, for the web viewer's covered solutions.
+%%
+%%  Load after the course style:
+%%      \usepackage{coursenotes}          \usepackage{tallproblems}    % English
+%%      \usepackage[korean]{coursenotes}  \usepackage{tallproblems}    % Korean
+%%
+%%  The paper is made taller than any problem or solution needs (30in), so
+%%  each one fits on a single page; crop.py then cuts every page to its
+%%  content.  In the viewer each problem and each solution is then exactly one
+%%  sheet, and a covered solution never spills onto a second page.  No running
+%%  head or foot: crop.py measures the content from the bottom up.
+%%
+%%  \probpart{<title>}       starts a part: an unnumbered top-level bookmark and
+%%                           a small label above the next problem
+%%  \begin{problem}{<title>}{<1|2|3>} ... \end{problem}   title, difficulty stars
+%%  \begin{solution} ... \end{solution}                    of the last problem
+%%  \begin{parts} \item ... \end{parts}                    (a), (b), ...
+%%  \sol{a}                  starts the solution of part (a)
+%%  \begin{answer} ... \end{answer}                        boxed final answers
+%%  \problemlist             the list of problems (from the .ptl file)
+%%  \makeprobheader          the masthead without running heads
+%%
+%%  For the viewer it writes the same named destinations as the book layout
+%%  (problems/common.tex): pb.prob.<N> and pb.sol.<N>; for tools/probcheck.py
+%%  the labels probstart:<N> and solstart:<N>.  MARK in the viewer must be "pb".
+%% ---------------------------------------------------------------------------
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tallproblems}[2026/11/23 one sheet per problem and per solution]
+
+\geometry{paperwidth=8.5in,paperheight=30in,
+          top=0.7in,bottom=0.5in,left=1in,right=1in,
+          headheight=0pt,headsep=0pt,footskip=0pt}
+\AtBeginDocument{\pagestyle{empty}}
+
+\ifcn@korean
+  \def\tp@probword{문제}\def\tp@solword{풀이}\def\tp@answord{답}
+\else
+  \def\tp@probword{Problem}\def\tp@solword{Solution}\def\tp@answord{Answer}
+\fi
+
+\newcommand{\tp@stars}[1]{%
+  \ifcase#1\or$\bigstar$\or$\bigstar\bigstar$\or$\bigstar\bigstar\bigstar$\fi}
+
+%% a named destination pb.<name> for the web viewer
+\newcommand{\tp@mark}[1]{\Hy@raisedlink{\hyper@anchorstart{pb.#1}\hyper@anchorend}}
+
+\newcounter{tpprob}
+\def\tp@title{}
+\def\tp@parttitle{}
+\newcommand{\probpart}[1]{\gdef\tp@parttitle{#1}}
+
+\newcommand{\tp@rule}{\par\vspace{3pt}\hrule\vspace{9pt}}
+
+\newenvironment{problem}[2]{%
+  \clearpage
+  \refstepcounter{tpprob}%
+  \gdef\tp@title{#1}%
+  \ifx\tp@parttitle\@empty\else
+    \phantomsection
+    \addcontentsline{toc}{part}{\tp@parttitle}%
+    \addtocontents{ptl}{\protect\tp@partrow{\tp@parttitle}}%
+    \noindent{\small\color{black!60}\tp@parttitle}\par\vspace{5pt}%
+    \gdef\tp@parttitle{}%
+  \fi
+  \phantomsection
+  \addcontentsline{toc}{section}{\protect\numberline{\thetpprob}#1}%
+  \addtocontents{ptl}{\protect\tp@row{\thetpprob}{#1}{#2}}%
+  \label{probstart:\thetpprob}\tp@mark{prob.\thetpprob}%
+  \noindent{\large\bfseries\tp@probword~\thetpprob.\ \ #1}\hfill{\tp@stars{#2}}%
+  \tp@rule
+}{\par}
+
+\newenvironment{solution}{%
+  \clearpage
+  \phantomsection
+  \label{solstart:\thetpprob}\tp@mark{sol.\thetpprob}%
+  \noindent{\large\bfseries\tp@solword~\thetpprob.\ \ \tp@title}%
+  \tp@rule
+}{\par}
+
+\newenvironment{parts}
+  {\begin{enumerate}[label=(\alph*),leftmargin=2em,itemsep=4pt,topsep=4pt]}
+  {\end{enumerate}}
+
+\newcommand{\sol}[1]{\par\addvspace{6pt}\noindent\textbf{(#1)}\ \ignorespaces}
+
+\newenvironment{answer}
+  {\begin{keybox}\noindent{\bfseries\tp@answord.}\par\nobreak\ignorespaces}
+  {\end{keybox}}
+
+%% ---- the list of problems on the first page -------------------------------
+%% Written to \jobname.ptl as the problems are set and read back on the next
+%% run (the mechanism of the table of contents).  Rows are boxes, not a
+%% tabular: \@starttoc opens a group, which must not straddle alignment cells.
+\newcommand{\tp@partrow}[1]{%
+  \par\addvspace{7pt}\noindent{\bfseries #1}\par\nobreak\vspace{2pt}}
+\newcommand{\tp@row}[3]{%
+  \par\noindent\hbox to\textwidth{\hbox to 2.4em{\hfil#1.}\ \ #2\hfil\tp@stars{#3}}}
+\newcommand{\problemlist}{\begingroup\parskip=1pt\@starttoc{ptl}\endgroup}
+
+%% ---- the masthead (the notes' masthead, without byline and running head) ---
+\newcommand{\makeprobheader}{%
+  \noindent\begin{minipage}{\textwidth}%
+    \normalsize\cn@coursehead\hfill\cn@date%
+  \end{minipage}\\[3pt]
+  \noindent\rule{\textwidth}{1.1pt}\\[-9.5pt]
+  \noindent\rule{\textwidth}{0.4pt}\\[5pt]
+  \noindent\begin{minipage}{\textwidth}\centering
+    {\large\bfseries\cn@lectitle}%
+  \end{minipage}\\[6pt]
+  \noindent\rule{\textwidth}{0.4pt}\\[-9.5pt]
+  \noindent\rule{\textwidth}{1.1pt}\\[4pt]
+  \vspace{0.6em}}
+
+\endinput

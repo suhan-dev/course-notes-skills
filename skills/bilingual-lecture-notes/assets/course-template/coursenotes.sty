@@ -1,0 +1,389 @@
+%% coursenotes.sty --- shared style for one course's bilingual lecture notes
+%%
+%% One continuous document per language, organised by TOPIC rather than by
+%% lecture date.  Typography follows the MIT OCW scribe-note format: article
+%% class, 1in margins, a ruled masthead instead of a title page, left-aligned
+%% bold section heads, a running head and a centred folio.  Strictly black and
+%% white: every device that sets text apart does so by size, rule, indentation
+%% or shape, never by colour, so the notes print well and read the same on any
+%% screen.
+%%
+%% Both editions compile with XeLaTeX.  The Korean edition needs xetexko; the
+%% English one uses XeLaTeX too, so that both editions get the same Latin font
+%% (Latin Modern via fontspec) and the same microtype settings.
+%%
+%% Options:
+%%   korean    load xetexko and print every word the style emits in Korean
+%%   english   (default)
+%%
+%% Generalised from the style files of several course-note repositories.
+%% Rename the prefix and the file if two courses ever have to share a build.
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{coursenotes}[2026/11/23 bilingual course lecture notes]
+
+\newif\ifcn@korean \cn@koreanfalse
+\DeclareOption{korean}{\cn@koreantrue}
+\DeclareOption{english}{\cn@koreanfalse}
+\ProcessOptions\relax
+
+%% ---------------------------------------------------------------- packages
+\RequirePackage[letterpaper,margin=1in,headheight=15pt,headsep=18pt]{geometry}
+\RequirePackage{amsmath,amssymb,amsthm,mathtools}
+\RequirePackage{bm}
+\RequirePackage{graphicx}
+\RequirePackage{xcolor}          % greys only (black!40 and the like)
+\RequirePackage{enumitem}
+\RequirePackage{booktabs}
+\RequirePackage{array}
+\RequirePackage{longtable}       % the lecture log can run past one page
+\RequirePackage{fancyhdr}
+\RequirePackage{mdframed}
+\RequirePackage{tikz}
+\usetikzlibrary{arrows.meta,calc,positioning,decorations.pathreplacing}
+\RequirePackage{needspace}
+\RequirePackage{microtype}
+
+%% ---------------------------------------------------------------- fonts
+\RequirePackage{fontspec}
+% fontspec's own default (Latin Modern, shipped with TeX Live) is used for the
+% Latin script: no \setmainfont, so nothing depends on fonts registered with
+% the operating system.
+\ifcn@korean
+  \RequirePackage[hangul]{xetexko}
+  % macOS registers the Nanum fonts as "Nanum Myeongjo" / "Nanum Gothic"; the
+  % Debian/Ubuntu fonts-nanum package registers them without the space.  Take
+  % whichever this machine has, so the same source builds on both.
+  \IfFontExistsTF{Nanum Myeongjo}
+    {\def\cn@myeongjo{Nanum Myeongjo}\def\cn@gothic{Nanum Gothic}}
+    {\def\cn@myeongjo{NanumMyeongjo}\def\cn@gothic{NanumGothic}}
+  \setmainhangulfont{\cn@myeongjo}[Script=Hangul,AutoFakeSlant=0.2]
+  \setsanshangulfont{\cn@gothic}[Script=Hangul]
+  \setmonohangulfont{\cn@gothic}[Script=Hangul]
+\fi
+
+%% ---------------------------------------------------------------- hyperref
+% Links stay black: these notes are meant to be read and printed on paper.
+% bookmarksnumbered: article writes its ToC entries as \numberline{2.3}{...},
+% and hyperref drops that number from the PDF bookmark unless asked to keep it.
+% The web viewer keys on the section number to carry the reader's place across
+% the EN/KO switch (the two editions have different page counts, the numbering
+% is the same), so a bookmark has to read "2.3 Title", not just "Title".
+\RequirePackage[colorlinks=true,linkcolor=black,citecolor=black,
+                urlcolor=black,filecolor=black,
+                bookmarksnumbered=true]{hyperref}
+
+%% ---------------------------------------------------------------- words
+%% Every word the style prints is collected here, so that the Korean edition
+%% reads as Korean rather than English headings over Korean prose.
+\ifcn@korean
+  \def\cn@defword{정의}       \def\cn@exword{예}
+  \def\cn@thmword{정리}       \def\cn@propword{명제}
+  \def\cn@lemword{보조정리}   \def\cn@corword{따름정리}
+  \def\cn@remword{주해}       \def\cn@noteword{참고}
+  \def\cn@cautword{주의}      \def\cn@checkword{검토}
+  \def\cn@proofword{증명}     \def\cn@scribeword{정리자 주}
+  \def\cn@whyword{왜 배우나}  \def\cn@glanceword{한눈에 보기}
+  \def\cn@procword{절차}      \def\cn@pitword{헷갈리기 쉬운 점}
+  \def\cn@lecword{강의}       \def\cn@lecturerword{강의}
+  \def\cn@notesword{정리}     \def\cn@sourceword{출처}
+\else
+  \def\cn@defword{Definition} \def\cn@exword{Example}
+  \def\cn@thmword{Theorem}    \def\cn@propword{Proposition}
+  \def\cn@lemword{Lemma}      \def\cn@corword{Corollary}
+  \def\cn@remword{Remark}     \def\cn@noteword{Note}
+  \def\cn@cautword{Caution}   \def\cn@checkword{Check}
+  \def\cn@proofword{Proof}    \def\cn@scribeword{Scribe's note}
+  \def\cn@whyword{Why we do this} \def\cn@glanceword{At a glance}
+  \def\cn@procword{Procedure} \def\cn@pitword{Easy to get wrong}
+  \def\cn@lecword{Lecture}    \def\cn@lecturerword{Lecturer}
+  \def\cn@notesword{Notes}    \def\cn@sourceword{Source}
+\fi
+
+%% ---------------------------------------------------------------- dates
+%% Dates are written once, as YYYY-MM-DD, and printed in the language of the
+%% edition: 2027-09-14 -> "14 September 2027" / "2027년 9월 14일".  The same
+%% ISO string becomes the label of the lecture break, and tools/lectures.py
+%% reads it back for the site manifest, so nobody has to parse prose dates.
+\def\cn@splitdate#1-#2-#3\relax{\def\cn@y{#1}\def\cn@m{#2}\def\cn@d{#3}}
+\newcommand{\cn@monthname}[1]{\ifcase#1\or January\or February\or March\or
+  April\or May\or June\or July\or August\or September\or October\or
+  November\or December\fi}
+\newcommand{\isodate}[1]{%
+  \cn@splitdate#1\relax
+  \ifcn@korean \number\cn@y년~\number\cn@m월~\number\cn@d일%
+  \else \number\cn@d~\cn@monthname{\number\cn@m}~\number\cn@y\fi}
+
+%% ---------------------------------------------------------------- course fields
+\let\cn@course\@empty   \let\cn@courseno\@empty \let\cn@term\@empty
+\let\cn@lecnum\@empty   \let\cn@lectitle\@empty \let\cn@date\@empty
+\let\cn@lecturer\@empty \let\cn@notesby\@empty
+\newcommand{\coursename}[1]{\def\cn@course{#1}}
+\newcommand{\courseno}[1]{\def\cn@courseno{#1}}
+\newcommand{\term}[1]{\def\cn@term{#1}}
+\newcommand{\lecnum}[1]{\def\cn@lecnum{#1}}
+\newcommand{\lectitle}[1]{\def\cn@lectitle{#1}}
+\newcommand{\lecdate}[1]{\def\cn@date{#1}}
+\newcommand{\lecturer}[1]{\def\cn@lecturer{#1}}
+\newcommand{\notesby}[1]{\def\cn@notesby{#1}}
+
+%% ---------------------------------------------------------------- masthead
+%%   <course no. + name (term)>                                      <date>
+%%   ======================================================================
+%%                              <title>
+%%   ======================================================================
+%%   Lecturer: ...                                            Notes: ...
+\newcommand{\cn@coursehead}{%
+  \ifx\cn@courseno\@empty\else\cn@courseno\ \fi\cn@course
+  \ifx\cn@term\@empty\else\ (\cn@term)\fi}
+\newcommand{\cn@bylineline}{%
+  \noindent\begin{minipage}{\textwidth}%
+    \normalsize
+    \ifx\cn@lecturer\@empty\else\textit{\cn@lecturerword:}~\cn@lecturer\fi
+    \hfill
+    \ifx\cn@notesby\@empty\else\textit{\cn@notesword:}~\cn@notesby\fi
+  \end{minipage}\\[2pt]}
+\newcommand{\makelecheader}{%
+  \thispagestyle{plain}%
+  \vspace*{-0.40in}%
+  \noindent\begin{minipage}{\textwidth}%
+    \normalsize\cn@coursehead\hfill\cn@date%
+  \end{minipage}\\[3pt]
+  \noindent\rule{\textwidth}{1.1pt}\\[-9.5pt]
+  \noindent\rule{\textwidth}{0.4pt}\\[5pt]
+  \noindent\begin{minipage}{\textwidth}\centering
+    {\large\bfseries
+      \ifx\cn@lecnum\@empty\else\cn@lecword\ \cn@lecnum: \fi\cn@lectitle}%
+  \end{minipage}\\[6pt]
+  \noindent\rule{\textwidth}{0.4pt}\\[-9.5pt]
+  \noindent\rule{\textwidth}{1.1pt}\\[4pt]
+  \ifx\cn@lecturer\@empty\ifx\cn@notesby\@empty\else\cn@bylineline\fi
+  \else\cn@bylineline\fi
+  \vspace{1.1em}%
+  \pagestyle{fancy}%
+  \fancyhf{}%
+  \fancyhead[L]{\small
+    \ifx\cn@lecnum\@empty\else\cn@lecword\ \cn@lecnum: \fi\cn@lectitle}%
+  \fancyhead[R]{\small\cn@date}%
+  \fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0.4pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyfoot[C]{\small\thepage}%
+  \renewcommand{\headrulewidth}{0pt}%
+  \renewcommand{\footrulewidth}{0pt}%
+}
+
+%% ---------------------------------------------------------------- headings
+\RequirePackage{titlesec}
+\titleformat{\section}{\normalfont\large\bfseries}{\thesection}{0.7em}{}
+\titleformat{\subsection}{\normalfont\normalsize\bfseries}{\thesubsection}{0.6em}{}
+\titlespacing*{\section}{0pt}{1.5ex plus 1ex minus .2ex}{1.0ex plus .2ex}
+\titlespacing*{\subsection}{0pt}{1.2ex plus 1ex minus .2ex}{0.8ex plus .2ex}
+%% Never strand a heading at the foot of a page.
+\let\cn@oldsection\section
+\renewcommand{\section}{\Needspace*{6\baselineskip}\cn@oldsection}
+\let\cn@oldsubsection\subsection
+\renewcommand{\subsection}{\Needspace*{4\baselineskip}\cn@oldsubsection}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.35em}
+%% the prose is full of unbreakable inline maths: give TeX a last-resort stretch
+\setlength{\emergencystretch}{3em}
+
+%% ---------------------------------------------------------------- theorems
+%% One master counter, \c@definition, shared by everything, numbered per section.
+\theoremstyle{definition}
+\newtheorem{definition}{\cn@defword}[section]
+\newtheorem{example}[definition]{\cn@exword}
+\theoremstyle{plain}
+\newtheorem{theorem}[definition]{\cn@thmword}
+\newtheorem{proposition}[definition]{\cn@propword}
+\newtheorem{lemma}[definition]{\cn@lemword}
+\newtheorem{corollary}[definition]{\cn@corword}
+\theoremstyle{remark}
+\newtheorem{remark}[definition]{\cn@remword}
+\newtheorem{note}[definition]{\cn@noteword}
+\renewcommand{\proofname}{\cn@proofword}
+%% Equations are numbered straight through the whole document: (1), (2), ...
+
+%% ---------------------------------------------------------------- boxes
+%% Told apart by their RULES, never by colour:
+%%   caution  -- a heavy rule down the left margin (numbered, so it can be \ref'd)
+%%   keybox   -- a thin closed frame around a key result
+%%   review   -- a heavy left rule like caution, headed "Check" / "검토": a place
+%%               where the lecture's own argument does not survive review (use
+%%               only if the course keeps such remarks in the text; see
+%%               references/document-structure.md).  Not called `check':
+%%               amsmath already owns \check (the accent).
+\newmdenv[
+  topline=false,bottomline=false,rightline=false,
+  linecolor=black,linewidth=1.8pt,backgroundcolor=white,
+  innertopmargin=4pt,innerbottommargin=4pt,
+  innerleftmargin=9pt,innerrightmargin=0pt,
+  skipabove=10pt,skipbelow=10pt
+]{cn@rulebox}
+\newenvironment{caution}[1][]{%
+  \begin{cn@rulebox}\refstepcounter{definition}%
+  \noindent{\bfseries\cn@cautword~\thedefinition
+  \if\relax\detokenize{#1}\relax\else\ (#1)\fi.}\ \ignorespaces
+}{\end{cn@rulebox}}
+\newenvironment{review}[1][]{%
+  \begin{cn@rulebox}%
+  \noindent{\bfseries\cn@checkword
+  \if\relax\detokenize{#1}\relax\else\ (#1)\fi.}\ \ignorespaces
+}{\end{cn@rulebox}}
+\newmdenv[
+  linecolor=black,linewidth=0.6pt,backgroundcolor=white,
+  innertopmargin=7pt,innerbottommargin=7pt,
+  innerleftmargin=9pt,innerrightmargin=9pt,
+  skipabove=10pt,skipbelow=10pt
+]{keybox}
+
+%% Reading-aid boxes (optional; used when a course asked for notes that read
+%% like a study guide).  A section opens with `why' and closes with `glance'.
+%%   why       -- rules above and below only: the question the section answers
+%%   glance    -- the keybox frame with a heading: the result in a few lines
+%%   procedure -- the keybox frame around numbered steps
+%%   pitfall   -- the caution rule: a common mistake and the right version
+\newmdenv[
+  leftline=false,rightline=false,
+  linecolor=black,linewidth=0.8pt,backgroundcolor=white,
+  innertopmargin=6pt,innerbottommargin=6pt,
+  innerleftmargin=2pt,innerrightmargin=2pt,
+  skipabove=8pt,skipbelow=10pt,nobreak=true
+]{cn@whybox}
+\newenvironment{why}
+  {\begin{cn@whybox}\noindent{\bfseries\cn@whyword.}\ \ignorespaces}
+  {\end{cn@whybox}}
+\newenvironment{glance}
+  {\begin{keybox}\noindent{\bfseries\cn@glanceword.}\par\nobreak\ignorespaces}
+  {\end{keybox}}
+\newenvironment{procedure}[1][]
+  {\begin{keybox}\noindent{\bfseries\cn@procword
+     \if\relax\detokenize{#1}\relax\else\ --- #1\fi.}\par\nobreak
+   \begin{enumerate}[label=\arabic*.,leftmargin=1.7em,itemsep=2pt,topsep=3pt]}
+  {\end{enumerate}\end{keybox}}
+\newenvironment{pitfall}[1][]
+  {\begin{cn@rulebox}\noindent{\bfseries\cn@pitword
+     \if\relax\detokenize{#1}\relax\else\ (#1)\fi.}\ \ignorespaces}
+  {\end{cn@rulebox}}
+
+%% ---------------------------------------------------------------- scribe note
+%% Material the note-taker added that was NOT in the lecture: a missing step, a
+%% cross-check, background.  Set smaller and indented with a marker hanging in
+%% the margin, so it never reads as lecture content.  Never use it to say "the
+%% handout writes X": slips are corrected silently and listed in the report.
+\newcommand{\scribe}[1]{%
+  \par\addvspace{7pt}%
+  \begingroup
+    \small\leftskip=1.7em \rightskip=0.5em \parindent=0pt
+    \noindent\llap{$\blacktriangleright$\hspace{0.7em}}%
+    \textit{\cn@scribeword.}\enspace #1\par
+  \endgroup
+  \addvspace{7pt}}
+
+%% ---------------------------------------------------------------- parts
+%% Large units by TOPIC (never by date): a fresh page, the title in small
+%% capitals between two hairlines.
+%%   \partdivider{Part II --- Title}      \partdivider{제2부 --- 제목}
+%% The ToC entry goes in at PART level, one step above the sections, so the PDF
+%% bookmarks nest every section under its part.  The part title carries no
+%% section-style number, so the web viewer -- which treats only bookmarks that
+%% open with "2" / "2.3" / "A" as sections -- never mistakes a part for a
+%% section.  Section numbers run straight through all parts and never restart.
+\newcommand{\partdivider}[1]{%
+  \clearpage
+  \phantomsection
+  \addcontentsline{toc}{part}{#1}%
+  \vspace*{0.10\textheight}%
+  \begin{center}
+    \rule{0.62\textwidth}{0.4pt}\\[13pt]
+    {\Large\scshape #1}\\[13pt]
+    \rule{0.62\textwidth}{0.4pt}
+  \end{center}
+  \vspace{0.045\textheight}%
+  \par\noindent\ignorespaces}
+
+%% The part line in the table of contents: generous space above, a thin grey
+%% rule across the measure, the title one size up and bold; the page number in
+%% the same place and size as a section's.  Never left alone at a page foot.
+\renewcommand*\l@part[2]{%
+  \ifnum\c@tocdepth>-2\relax
+    \addpenalty{-\@highpenalty}%
+    \addvspace{0.9em \@plus\p@}%
+    \begingroup
+      \parindent\z@ \parfillskip\z@skip \rightskip\z@skip
+      \sbox\z@{#2}%
+      {\color[gray]{0.55}\hrule height0.4pt depth\z@}%
+      \nobreak\vskip 0.4em
+      \rightskip\@pnumwidth \parfillskip-\@pnumwidth
+      \leavevmode\large\bfseries
+      #1\nobreak\hfil\nobreak\hb@xt@\@pnumwidth{\hss\usebox\z@}\par
+      \penalty\@M\vskip 0.25em
+    \endgroup
+    \@nobreaktrue
+  \fi}
+
+%% ---------------------------------------------------------------- lecture break
+%% Where a lecture's new material begins in this topic-ordered document: a
+%% hairline across the measure with the label flush right.  It goes into
+%% neither the ToC nor the bookmarks: it is a mark, not a division.
+%%   \lecturebreak[2027-09-14]{Lecture 3}      \lecturebreak[2027-09-14]{제3강}
+%%   \lecturebreak{Lecture 4-2}                 (date not known for certain)
+%%   \lecturebreak[2027-09-21]{Planned}         (written before the class)
+%% Give the date ONLY when it is known for certain.  With a date the break also
+%% sets the label lec:<date>, which the lecture log reads with \pageref.
+\newlength{\cn@lbwidth}
+\newcommand{\lecturebreak}[2][]{%
+  \par\Needspace*{8\baselineskip}\addvspace{14pt}%
+  \if\relax\detokenize{#1}\relax
+    \def\cn@lb{#2}%
+  \else
+    \def\cn@lb{#2\ \textperiodcentered\ \isodate{#1}}%
+    \phantomsection\label{lec:#1}%
+  \fi
+  \settowidth{\cn@lbwidth}{\footnotesize\scshape\cn@lb}%
+  \noindent\hbox to \textwidth{%
+    {\color{black!40}\vrule height0.4pt depth0pt
+       width\dimexpr\textwidth-\cn@lbwidth-8pt\relax}%
+    \hfill
+    {\color{black!65}\footnotesize\scshape\cn@lb}}%
+  \par\addvspace{9pt}\noindent\ignorespaces}
+
+%% What the notes for this lecture rest on: a small grey line under the break.
+%%   \sourcenote{Handout 3-1 and the recording.}
+%%   \sourcenote{No record of this class; reconstructed from the posted notes.}
+\newcommand{\sourcenote}[1]{%
+  \par\vspace{-6pt}%
+  {\color{black!55}\footnotesize\hfill\textit{\cn@sourceword:}~#1\par}%
+  \addvspace{6pt}\noindent\ignorespaces}
+
+%% ---------------------------------------------------------------- notation
+\renewcommand{\d}{\mathrm{d}}            % LaTeX's under-dot accent is never used
+\newcommand{\dv}[2]{\frac{\d #1}{\d #2}}
+\newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+\newcommand{\pdc}[3]{\left(\frac{\partial #1}{\partial #2}\right)_{#3}}
+\newcommand{\avg}[1]{\langle #1 \rangle}
+\newcommand{\vv}[1]{\vec{#1}}
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\mat}[1]{\mathsf{#1}}
+\newcommand{\T}{\mathsf{T}}
+\newcommand{\half}{\tfrac{1}{2}}
+\newcommand{\keyword}[1]{\textbf{#1}}    % a term at its point of definition
+
+%% ---------------------------------------------------------------- captions
+\long\def\@makecaption#1#2{%
+  \vskip 6pt
+  \small
+  \sbox\@tempboxa{\textbf{#1.} #2}%
+  \ifdim\wd\@tempboxa>\hsize
+    \textbf{#1.} #2\par
+  \else
+    \global\@minipagefalse
+    \hb@xt@\hsize{\hfil\box\@tempboxa\hfil}%
+  \fi
+  \vskip 2pt}
+
+\endinput

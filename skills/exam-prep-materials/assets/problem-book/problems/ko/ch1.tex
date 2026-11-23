@@ -1,0 +1,72 @@
+%% ============================================================================
+\probchapter{무작위 걷기와 확산}{노트 \S1--\S2}
+
+%% ----------------------------------------------------------------------------
+\problem{치우친 걷기}{새 문제}{\S1}
+
+직선 위의 걷는 이가 서로 독립인 걸음 $s_k$ 를 내딛는다. 걸음은 확률 $p$ 로
+$+a$, 확률 $q=1-p$ 로 $-a$ 다. $n$ 걸음 뒤의 위치는 $x_n=\sum_{k=1}^n s_k$ 다.
+\begin{parts}
+  \item 한 걸음의 평균과 분산을 구하라.
+  \item $\avg{x_n}$ 과 $x_n$ 의 분산을 구하라.
+  \item 표류 $\avg{x_n}$ 은 $n$ 에, 퍼짐은 $\sqrt n$ 에 비례해 자란다.
+        $p=0.6$ 일 때 몇 걸음부터 표류가 표준편차보다 커지는가?
+\end{parts}
+
+\solution
+
+\solpart{a}{한 걸음}
+\begin{equation}
+  \avg{s}=a\,p-a\,q=a(2p-1),\qquad \avg{s^2}=a^2
+\end{equation}
+이므로
+\begin{equation}
+  \operatorname{Var}s=\avg{s^2}-\avg{s}^2=a^2\bigl[1-(2p-1)^2\bigr]
+  =a^2\bigl[(1-2p+1)(1+2p-1)\bigr]=\ans{4a^2pq}.
+\end{equation}
+확인: $p=\tfrac12$ 이면 $a^2$ 로 치우치지 않은 걷기, $p=1$ 이면 $0$ 으로 정해진
+걷기가 된다.
+
+\solpart{b}{$n$ 걸음 뒤}
+평균은 언제나 더해지고, 분산은 걸음이 독립이므로 더해진다.
+\begin{equation}
+  \ans{\avg{x_n}=na(2p-1),\qquad \operatorname{Var}x_n=4na^2pq}.
+\end{equation}
+
+\solpart{c}{표류와 퍼짐}
+표류가 표준편차보다 커지는 조건은
+\begin{equation}
+  na\,\lvert 2p-1\rvert>2a\sqrt{npq}
+  \iff n>\frac{4pq}{(2p-1)^2}
+\end{equation}
+이다. $p=0.6$ 이면 $4pq=0.96$, $(2p-1)^2=0.04$ 이므로 $n>24$, 곧
+\ans{\text{25번째 걸음부터}} 다.
+
+%% ----------------------------------------------------------------------------
+\problem{확산에는 얼마나 걸리나}{새 문제}{\S2}
+
+물속의 작은 분자는 $D=1.0\times10^{-9}\,\mathrm{m^2\,s^{-1}}$ 이다.
+일차원 결과 $\avg{x^2}=2Dt$ 를 쓴다.
+\begin{parts}
+  \item 제곱평균제곱근 변위가 $1\,\mathrm{mm}$ 가 되기까지 얼마나 걸리나?
+  \item 세포 하나($10\,\mu\mathrm{m}$)를 건너는 데는 얼마나 걸리나?
+  \item 두 시간의 비를 한 줄로 설명하라.
+\end{parts}
+
+\solution
+
+\solpart{a}{1 밀리미터}
+\begin{equation}
+  t=\frac{\avg{x^2}}{2D}=\frac{(10^{-3}\,\mathrm m)^2}{2\times10^{-9}\,\mathrm{m^2\,s^{-1}}}
+  =\ans{500\,\mathrm s}\approx 8\,\text{분}.
+\end{equation}
+
+\solpart{b}{10 마이크로미터}
+\begin{equation}
+  t=\frac{(10^{-5}\,\mathrm m)^2}{2\times10^{-9}\,\mathrm{m^2\,s^{-1}}}
+  =\ans{0.05\,\mathrm s}.
+\end{equation}
+
+\solpart{c}{비}
+시간은 거리의 제곱에 비례한다. 거리가 $100$ 배면 시간은 $100^2=10^4$ 배이고,
+실제로 $500\,\mathrm s/0.05\,\mathrm s=10^4$ 이다.

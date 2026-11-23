@@ -1,0 +1,25 @@
+{
+  "name": "course-notes-skills",
+  "owner": {
+    "name": "suhan-dev"
+  },
+  "metadata": {
+    "description": "Claude skills for a student's term of courses: bilingual (English/Korean) lecture notes in XeLaTeX from handouts, handwriting and recordings, a PDF viewer site and a course hub on GitHub Pages, problem books, answer sheets, mock exams and cheat sheets, syncing the student's Mac, and transcribing class recordings.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "course-notes",
+      "description": "Every skill in this repository, installed together (they share one course template, one viewer and one set of rules).",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/bilingual-lecture-notes",
+        "./skills/pdf-notes-viewer",
+        "./skills/course-notes-hub",
+        "./skills/exam-prep-materials",
+        "./skills/student-mac-and-recordings"
+      ]
+    }
+  ]
+}

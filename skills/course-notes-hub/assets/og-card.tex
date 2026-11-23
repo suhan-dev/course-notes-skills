@@ -1,0 +1,58 @@
+%% og-card.tex --- the link-preview image of the hub (1200 x 630 px).
+%%
+%%   xelatex og-card.tex
+%%   pdftoppm -r 72 -jpeg -jpegopt quality=90 -singlefile og-card.pdf og
+%%
+%% The paper is 1200bp x 630bp, so 72 dpi gives exactly 1200 x 630 pixels.
+%% Colours are the hub's tokens (--bg, --ink, --ink-2, --dim, --accent).
+%% After changing the card, raise ?v= on og:image in index.html: messengers
+%% (KakaoTalk above all) keep a scraped preview for a long time.
+\documentclass{article}
+\usepackage[paperwidth=1200bp,paperheight=630bp,margin=0pt]{geometry}
+\usepackage{fontspec}
+% Latin: Helvetica Neue on a Mac, Liberation Sans on Linux, else Latin Modern Sans.
+\IfFontExistsTF{Helvetica Neue}{\setmainfont{Helvetica Neue}}
+  {\IfFontExistsTF{Liberation Sans}{\setmainfont{Liberation Sans}}
+    {\setmainfont{lmsans10-regular.otf}}}
+\usepackage[hangul]{xetexko}
+% Hangul: Nanum Gothic under the macOS name or the Debian one; the title in
+% ExtraBold where it is installed (macOS, fonts-nanum-extra), else Bold.
+\IfFontExistsTF{Nanum Gothic}{\def\ogGothic{Nanum Gothic}}{\def\ogGothic{NanumGothic}}
+\setmainhangulfont{\ogGothic}[Script=Hangul]
+\IfFontExistsTF{Nanum Gothic ExtraBold}
+  {\newhangulfontfamily\kohuge{Nanum Gothic ExtraBold}[Script=Hangul]}
+  {\IfFontExistsTF{NanumGothicExtraBold}
+    {\newhangulfontfamily\kohuge{NanumGothicExtraBold}[Script=Hangul]}
+    {\newhangulfontfamily\kohuge{\ogGothic}[Script=Hangul,UprightFont=*/B]}}
+\usepackage{tikz}
+\usepackage{xcolor}
+\definecolor{bg}{HTML}{08080A}
+\definecolor{ink}{HTML}{F4F1EA}
+\definecolor{ink2}{HTML}{A8A49B}
+\definecolor{dim}{HTML}{55524C}
+\definecolor{accent}{HTML}{E9B872}
+\pagestyle{empty}
+\setlength{\parindent}{0pt}
+\begin{document}
+\begin{tikzpicture}[x=1bp,y=1bp,inner sep=0pt,outer sep=0pt]
+  \useasboundingbox (0,0) rectangle (1200,630);
+  \fill[bg] (0,0) rectangle (1200,630);
+  \begin{scope}
+    \clip (0,0) rectangle (1200,630);
+    \shade[inner color=accent, outer color=bg, opacity=0.16] (1010,690) circle (520bp);
+  \end{scope}
+  \fill[ink, opacity=0.13] (88,560) rectangle (1112,561);
+  \node[anchor=north west, text=accent] at (88,540)
+    {\fontsize{19}{19}\selectfont 2027 \textperiodcentered\ 2학기};
+  \node[anchor=north west, text=ink] at (84,476)
+    {\kohuge\fontsize{116}{116}\selectfont 강의 필기};
+  % one or two lines of course names, separated by a centred dot
+  \node[anchor=north west, text=ink2] at (88,296)
+    {\fontsize{25}{25}\selectfont 샘플 과목 \textperiodcentered\ 다른 과목 \textperiodcentered\ 세 번째 과목};
+  \node[anchor=north west, text=ink2] at (88,248)
+    {\fontsize{25}{25}\selectfont 네 번째 과목 \textperiodcentered\ 실험 과목};
+  \fill[ink, opacity=0.13] (88,140) rectangle (1112,141);
+  \node[anchor=north west, text=dim] at (88,116)
+    {\fontsize{19}{19}\selectfont ACCOUNT.github.io/HUB-REPO};
+\end{tikzpicture}
+\end{document}

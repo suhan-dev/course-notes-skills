@@ -1,0 +1,38 @@
+%% ============================================================================
+\probchapter{Steady states}{Notes \S3}
+
+%% ----------------------------------------------------------------------------
+\problem{Flux through a membrane}{New}{\S3}
+
+A membrane of thickness $L$ separates two well-stirred solutions. Inside the
+membrane the concentration obeys the diffusion equation with
+$c(0,t)=c_0$ and $c(L,t)=c_L$ held fixed.
+\begin{parts}
+  \item Find the steady profile $c(x)$.
+  \item Find the steady flux $J=-D\,\partial c/\partial x$.
+  \item Evaluate $J$ for $D=1.0\times10^{-9}\,\mathrm{m^2\,s^{-1}}$,
+        $L=100\,\mu\mathrm m$, $c_0=1\,\mathrm{mol\,m^{-3}}$, $c_L=0$.
+\end{parts}
+
+\solution
+
+\solpart{a}{The profile}
+In a steady state $\partial c/\partial t=0$, so the diffusion equation leaves
+$\d^2c/\d x^2=0$: the profile is a straight line. Fitting the two boundary
+values,
+\begin{equation}
+  \ans{c(x)=c_0+(c_L-c_0)\,\frac xL}.
+\end{equation}
+
+\solpart{b}{The flux}
+\begin{equation}
+  J=-D\,\dv{c}{x}=\ans{D\,\frac{c_0-c_L}{L}},
+\end{equation}
+the same at every $x$, as it must be in a steady state (no accumulation
+anywhere). It flows from high to low concentration.
+
+\solpart{c}{Numbers}
+\begin{equation}
+  J=\frac{(1.0\times10^{-9}\,\mathrm{m^2\,s^{-1}})(1\,\mathrm{mol\,m^{-3}})}{1.0\times10^{-4}\,\mathrm m}
+  =\ans{1.0\times10^{-5}\,\mathrm{mol\,m^{-2}\,s^{-1}}}.
+\end{equation}

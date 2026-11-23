@@ -1,0 +1,37 @@
+%% A two-problem sample of the tall-page layout.  Build next to coursenotes.sty:
+%%   latexmk -xelatex sample-en.tex && python3 crop.py sample-en.pdf
+\documentclass[11pt]{article}
+\usepackage{coursenotes}
+\usepackage{tallproblems}
+\coursename{Sample Course}
+\term{Fall 2027}
+\lectitle{Practice Problems}
+\lecdate{6 September 2027}
+\begin{document}
+\makeprobheader
+\problemlist
+
+\probpart{Part I --- Random walks}
+\begin{problem}{A biased walk}{1}
+Steps are $+a$ with probability $p$ and $-a$ with probability $q=1-p$.
+\begin{parts}
+  \item Find $\avg{x_n}$.
+  \item Find $\operatorname{Var}x_n$.
+\end{parts}
+\end{problem}
+\begin{solution}
+\sol{a} $\avg{x_n}=n\avg{s}=na(p-q)$.
+\sol{b} $\operatorname{Var}s=a^2-a^2(p-q)^2=4a^2pq$, and independent variances add:
+\begin{answer}
+$\avg{x_n}=na(2p-1),\qquad \operatorname{Var}x_n=4na^2pq$.
+\end{answer}
+\end{solution}
+
+\probpart{Part II --- Diffusion}
+\begin{problem}{Spreading time}{2}
+With $D=10^{-9}\,\mathrm{m^2\,s^{-1}}$, how long until the rms displacement is $1\,\mathrm{mm}$?
+\end{problem}
+\begin{solution}
+$t=\avg{x^2}/2D=10^{-6}/(2\times10^{-9})\,\mathrm s=500\,\mathrm s$.
+\end{solution}
+\end{document}

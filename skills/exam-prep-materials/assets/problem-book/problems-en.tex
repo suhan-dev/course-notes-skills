@@ -1,0 +1,51 @@
+%% ============================================================================
+%%  <Course name> --- problem book, English edition.
+%%  Build: ./build.sh problems   (latexmk -xelatex, then tools/probcheck.py)
+%%
+%%  Problems and solutions alternate: each problem starts a new page and its
+%%  solution starts the next one (macros in problems/common.tex).  Keep
+%%  problems-ko.tex in step, chapter for chapter and problem for problem
+%%  (tools/probcheck.py checks that they match).  The web viewer finds the
+%%  solution pages by itself, through the named destinations that \problem
+%%  and \solution leave in the PDF.
+%% ============================================================================
+\documentclass[11pt]{article}
+\usepackage{coursenotes}
+
+\coursename{Sample Course}
+\term{Fall 2027}
+\lectitle{Problems and Solutions}
+\lecdate{Updated 6 September 2027}
+
+\newcommand{\ProbWord}{Problem}
+\newcommand{\SolWord}{Solution}
+\newcommand{\SourceWord}{Source}
+\newcommand{\NotesWord}{Notes}
+
+\input{problems/common}
+
+\begin{document}
+\makelecheader
+\probheads
+
+\tableofcontents
+
+\clearpage
+\markboth{}{}
+\section*{How to use this collection}
+Each problem starts on a new page and its solution starts on the next one, so
+you can work a problem before you turn the page. In the web viewer the
+solution pages stay covered until you tap them.
+
+\emph{Sources.} The source line under each title says where a problem comes
+from: a past exam or problem set (with the year), the practice exams written
+for these notes, or ``New'' for problems written for this collection. Where a
+past problem has extra parts, it says ``+ new parts''.
+
+\emph{Notation} follows the lecture notes; the ``Notes'' field names the
+sections a problem rests on.
+
+\input{problems/en/ch1}
+\input{problems/en/ch2}
+
+\end{document}

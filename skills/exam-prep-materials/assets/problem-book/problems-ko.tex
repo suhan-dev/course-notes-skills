@@ -1,0 +1,43 @@
+%% ============================================================================
+%%  <과목 이름> --- 문제풀이, 국문판.
+%%  빌드: ./build.sh problems   (latexmk -xelatex, 이어서 tools/probcheck.py)
+%%
+%%  problems-en.tex 와 장·문제의 차례와 번호가 같아야 한다.
+%% ============================================================================
+\documentclass[11pt]{article}
+\usepackage[korean]{coursenotes}
+
+\coursename{샘플 과목}
+\term{2027년 2학기}
+\lectitle{문제와 풀이}
+\lecdate{2027년 9월 6일 기준}
+
+\newcommand{\ProbWord}{문제}
+\newcommand{\SolWord}{풀이}
+\newcommand{\SourceWord}{출처}
+\newcommand{\NotesWord}{노트}
+
+\input{problems/common}
+
+\begin{document}
+\makelecheader
+\probheads
+
+\tableofcontents
+
+\clearpage
+\markboth{}{}
+\section*{이 문제집을 쓰는 법}
+문제는 늘 새 쪽에서 시작하고 그 풀이는 다음 쪽에서 시작한다. 쪽을 넘기기 전에
+먼저 풀어 볼 수 있다. 웹 뷰어에서는 풀이 쪽이 가려져 있다가 누르면 드러난다.
+
+\emph{출처.} 제목 아래 출처 줄에 문제가 어디서 왔는지 적었다. 예년 시험이나
+과제(연도와 함께), 이 노트에 맞춰 만든 모의고사, 이 문제집을 위해 새로 만든
+문제(``새 문제'')다. 예년 문제에 문항을 덧붙였으면 ``+ 새 문항''이라고 적었다.
+
+\emph{기호}는 강의노트를 따른다. ``노트'' 칸은 그 문제가 기대는 절이다.
+
+\input{problems/ko/ch1}
+\input{problems/ko/ch2}
+
+\end{document}

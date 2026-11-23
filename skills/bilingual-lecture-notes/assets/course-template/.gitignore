@@ -1,0 +1,16 @@
+# TeX droppings and local builds
+build/
+pdf/
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.xdv
+.DS_Store
+__pycache__/
+# Course materials from the instructor (handouts, slides, recordings) are never
+# committed: they are not ours to publish.  Keep them in the course folder.
+sources/

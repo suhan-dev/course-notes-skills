@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>강의 필기 — 2027-2</title>
+<meta name="description" content="27-2학기 여러 과목의 학습 자료를 저장하는 사이트">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#08080a">
+
+<!-- 링크 미리보기(카카오톡·슬랙·트위터 등). og:image 는 반드시 절대 URL 이어야
+     하고, 끝의 ?v= 는 캐시를 깨기 위한 것이다 — 카카오는 한 번 긁어간 미리보기를
+     오래 들고 있으므로, 카드를 고치면 이 숫자를 올려야 새로 읽는다. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="강의 필기">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://ACCOUNT.github.io/HUB-REPO/">
+<meta property="og:title" content="강의 필기 — 2027-2">
+<meta property="og:description" content="27-2학기 여러 과목의 학습 자료를 저장하는 사이트">
+<meta property="og:image" content="https://ACCOUNT.github.io/HUB-REPO/og.jpg?v=1">
+<meta property="og:image:secure_url" content="https://ACCOUNT.github.io/HUB-REPO/og.jpg?v=1">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="강의 필기 2027-2 — 샘플 과목, 다른 과목">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="강의 필기 — 2027-2">
+<meta name="twitter:description" content="27-2학기 여러 과목의 학습 자료를 저장하는 사이트">
+<meta name="twitter:image" content="https://ACCOUNT.github.io/HUB-REPO/og.jpg?v=1">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<style>
+  :root{
+    --bg:#08080a;
+    --ink:#f4f1ea;
+    --ink-2:#a8a49b;
+    --dim:#55524c;
+    --rule:#ffffff14;
+    --rule-hi:#ffffff40;
+    --accent:#e9b872;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+    --ease:cubic-bezier(.19,1,.22,1);
+  }
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:"Pretendard Variable",Pretendard,-apple-system,BlinkMacSystemFont,
+                "Apple SD Gothic Neo","Helvetica Neue",Segoe UI,sans-serif;
+    font-size:16px; line-height:1.6; letter-spacing:-0.012em;
+    -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;
+    min-height:100svh; overflow-x:hidden;
+  }
+  /* 화면 전체에 아주 옅은 입자. 평평한 검정이 디지털처럼 보이는 걸 막는다. */
+  .grain{
+    position:fixed; inset:-50%; z-index:3; pointer-events:none; opacity:.035;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .wrap{position:relative; z-index:2; max-width:1180px; margin:0 auto;
+        padding:0 clamp(20px,4vw,56px);
+        min-height:100svh; display:flex; flex-direction:column}
+
+  /* ── 상단 레일 ───────────────────────────────── */
+  .rail{
+    display:flex; align-items:baseline; justify-content:space-between; gap:16px;
+    padding:30px 0 0;
+    font:600 11.5px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--dim);
+  }
+  .rail .mark{color:var(--ink-2)}
+
+  /* ── 여는 문장 ───────────────────────────────── */
+  .intro{
+    margin:clamp(34px,6.4vh,86px) 0 clamp(26px,5vh,62px);
+    max-width:30ch;
+    font-size:clamp(20px,2.5vw,30px); font-weight:600; line-height:1.44;
+    letter-spacing:-0.035em; color:var(--ink);
+    word-break:keep-all;   /* 한글을 어절 단위로 끊는다 — "사이트 / 입니다." 같은 쪼개짐 방지 */
+  }
+  .intro .q{color:var(--dim)}
+  .stamp{
+    display:block; margin-top:clamp(12px,2vh,20px);
+    font:500 12px/1.6 var(--mono); letter-spacing:.08em; color:var(--dim);
+    opacity:0; transition:opacity .8s ease .2s;
+  }
+  .stamp.on{opacity:1}
+
+  /* ── 목록 ────────────────────────────────────── */
+  .list{border-top:1px solid var(--rule)}
+
+  .row{
+    position:relative; display:grid; align-items:center;
+    grid-template-columns:clamp(38px,5vw,64px) minmax(0,1fr) auto clamp(20px,2.4vw,30px);
+    gap:clamp(10px,2vw,26px);
+    padding:clamp(11px,1.7vh,25px) 0;
+    border-bottom:1px solid var(--rule);
+    text-decoration:none; color:inherit;
+    transition:opacity .45s var(--ease);
+  }
+  /* 하나에 마우스를 얹으면 나머지는 물러난다 */
+  @media (hover:hover){
+    .list:hover .row{opacity:.26}
+    .list .row:hover{opacity:1}
+  }
+  /* 밑줄이 왼쪽에서 자라나며 강조된다 */
+  .row::after{
+    content:""; position:absolute; left:0; bottom:-1px; height:1px; width:0;
+    background:var(--ink); transition:width .62s var(--ease);
+  }
+  .row:hover::after{width:100%}
+  .row:focus-visible{outline:2px solid var(--accent); outline-offset:6px; border-radius:2px}
+
+  .no{font:600 11.5px/1 var(--mono); letter-spacing:.1em; color:var(--dim);
+      transition:color .4s var(--ease)}
+  .row:hover .no{color:var(--accent)}
+
+  .name{
+    margin:0; font-size:clamp(24px,4vw,44px); font-weight:800;
+    letter-spacing:-0.045em; line-height:1.05; white-space:nowrap;
+    transition:transform .62s var(--ease);
+  }
+  .row:hover .name{transform:translateX(clamp(4px,.7vw,12px))}
+  /* 같은 과목 이름이 둘일 때(분반) 분반 이름을 작게 붙인다.
+     좁은 화면에서는 .side 가 숨으므로 구분은 제목 줄에 있어야 한다. */
+  .name .prof{margin-left:.42em; font-size:.4em; font-weight:600; letter-spacing:0; color:var(--dim)}
+
+  .side{text-align:right; min-width:0}
+  .en{
+    display:block; margin:0; font-size:clamp(11.5px,1.05vw,13.5px); font-weight:500;
+    color:var(--ink-2); letter-spacing:-0.002em; white-space:nowrap;
+  }
+  .meta{
+    display:block; margin:5px 0 0; min-height:1.2em;
+    font:500 11px/1.2 var(--mono); letter-spacing:.055em; color:var(--dim);
+    white-space:nowrap;
+  }
+  .meta.fade{animation:fin .5s var(--ease) both}
+  @keyframes fin{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+
+  .go{justify-self:end; width:clamp(18px,2vw,24px); height:clamp(18px,2vw,24px);
+      color:var(--dim); transition:transform .62s var(--ease), color .4s var(--ease)}
+  .row:hover .go{transform:translateX(7px); color:var(--ink)}
+
+  /* 모바일에서는 커서 미리보기가 없으므로 썸네일을 줄 안에 직접 둔다 */
+  .thumb{display:none}
+
+  /* ── 커서를 따라다니는 미리보기 ───────────────── */
+  #peek{
+    position:fixed; left:0; top:0; z-index:4; pointer-events:none;
+    width:clamp(212px,19vw,310px); aspect-ratio:1/1.414;
+    border:1px solid #ffffff1a; background:#0d0e12;
+    box-shadow:0 0 0 1px #00000080, 0 34px 76px -22px #000, 0 6px 18px #000000b3;
+    opacity:0; transform:translate3d(-50%,-50%,0) scale(.9) rotate(-3.5deg);
+    transition:opacity .34s var(--ease), transform .34s var(--ease);
+    will-change:transform,opacity;
+  }
+  #peek.on{opacity:1; transform:translate3d(-50%,-50%,0) scale(1) rotate(-3.5deg)}
+  #peek img{display:block; width:100%; height:100%; object-fit:cover; object-position:top center}
+
+  footer{
+    margin-top:auto; padding:clamp(18px,2.6vh,34px) 0 clamp(18px,3vh,40px);
+    display:flex; flex-wrap:wrap; gap:8px 20px;
+    font:500 11.5px/1.6 var(--mono); letter-spacing:.08em; color:var(--dim);
+  }
+  footer .sp{flex:1 1 auto}
+
+  /* ── 등장: 아래에서 밀려 올라오며 드러난다 ───── */
+  .rv>*{
+    display:block;
+    transform:translateY(105%);
+    transition:transform 1.05s var(--ease);
+    transition-delay:var(--d,0ms);
+  }
+  .rv{overflow:hidden}
+  .rv.in>*{transform:none}
+  .fv{opacity:0; transform:translateY(16px);
+      transition:opacity .9s var(--ease), transform .9s var(--ease);
+      transition-delay:var(--d,0ms)}
+  .fv.in{opacity:1; transform:none}
+
+  @media (max-width:720px){
+    .rail{padding-top:22px}
+    .intro{max-width:none; margin:56px 0 44px}
+    .row{
+      grid-template-columns:30px minmax(0,1fr) 62px;
+      gap:14px; padding:16px 0;
+    }
+    .name{font-size:clamp(23px,7.4vw,32px); white-space:normal}
+    .side{display:none}
+    .go{display:none}
+    .thumb{
+      display:block; width:62px; aspect-ratio:1/1.414; justify-self:end;
+      border:1px solid var(--rule); background:#0d0e12; object-fit:cover;
+      object-position:top center;
+    }
+    #peek{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.001ms !important; transition-duration:.001ms !important}
+    .rv>*{transform:none}
+    .fv{opacity:1; transform:none}
+  }
+</style>
+</head>
+<body>
+
+<div class="grain" aria-hidden="true"></div>
+<div id="peek" aria-hidden="true"><img alt="" decoding="async"></div>
+
+<div class="wrap">
+
+  <div class="rail">
+    <span class="mark">강의 필기</span>
+    <span>2027 &middot; 2학기</span>
+  </div>
+
+  <h1 class="intro fv">
+    27-2학기 여러 과목의
+    <span class="q">학습 자료를 저장하는 사이트입니다.</span>
+    <span class="stamp" id="stamp"></span>
+  </h1>
+
+  <main>
+    <div class="list" id="list">
+
+      <!-- 과목 하나 = 줄 하나. href 는 과목 사이트, data-repo 는 그 저장소 이름
+           (같은 계정의 Pages 라서 /<repo>/manifest.json 을 바로 읽는다),
+           data-thumb 은 make-thumb.py 로 만든 표지 미리보기. 번호(01, 02 …)는 손으로. -->
+      <a class="row" href="https://ACCOUNT.github.io/sample-course-notes/"
+         data-repo="sample-course-notes" data-thumb="thumbs/sample.jpg">
+        <span class="no rv"><span>01</span></span>
+        <h2 class="name rv"><span>샘플 과목</span></h2>
+        <span class="side fv"><span class="en">Sample Course</span><span class="meta"></span></span>
+        <img class="thumb" src="thumbs/sample.jpg" alt="" loading="lazy" decoding="async">
+        <svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </a>
+
+      <!-- 같은 과목을 두 분반으로 들으면 이름 뒤에 작은 꼬리표(.prof)로 구분한다.
+           좁은 화면에서는 오른쪽 영문 줄(.side)이 숨으므로 구분은 제목 줄에 있어야 한다. -->
+      <a class="row" href="https://ACCOUNT.github.io/sample-course-b-notes/"
+         data-repo="sample-course-b-notes" data-thumb="thumbs/sample.jpg">
+        <span class="no rv"><span>02</span></span>
+        <h2 class="name rv"><span>샘플 과목<small class="prof">B반</small></span></h2>
+        <span class="side fv"><span class="en">Sample Course · Section B</span><span class="meta"></span></span>
+        <img class="thumb" src="thumbs/sample.jpg" alt="" loading="lazy" decoding="async">
+        <svg class="go" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </a>
+
+    </div>
+  </main>
+
+  <footer>
+    <span>학교 이름</span>
+    <span class="sp"></span>
+    <span>국문 / 영문 전환은 각 과목 사이트에서</span>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  'use strict';
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var canHover = matchMedia('(hover:hover)').matches;
+
+  /* ── 등장 ─────────────────────────────────── */
+  var anim = document.querySelectorAll('.rv, .fv');
+  if (reduce || !('IntersectionObserver' in window)){
+    Array.prototype.forEach.call(anim, function(n){ n.classList.add('in'); });
+  } else {
+    var io = new IntersectionObserver(function(es){
+      var hit = es.filter(function(e){ return e.isIntersecting; });
+      hit.sort(function(a,b){ return a.boundingClientRect.top - b.boundingClientRect.top; });
+      hit.forEach(function(e,i){
+        var n = e.target;
+        if (!n.style.getPropertyValue('--d')) n.style.setProperty('--d', (i*52)+'ms');
+        n.classList.add('in');
+        io.unobserve(n);
+      });
+    }, { rootMargin:'0px 0px -6% 0px', threshold:0.05 });
+    Array.prototype.forEach.call(anim, function(n){ io.observe(n); });
+  }
+
+  /* ── 커서를 따라오는 미리보기 ───────────────── */
+  var rows = Array.prototype.slice.call(document.querySelectorAll('.row'));
+  if (canHover && !reduce){
+    var peek = document.getElementById('peek');
+    var pimg = peek.querySelector('img');
+    var tx = 0, ty = 0, cx = 0, cy = 0, live = false, raf = 0;
+
+    rows.forEach(function(r){ var i = new Image(); i.src = r.dataset.thumb; });
+
+    // 가로는 오른쪽에 붙여 둔다. 커서를 따라 옆으로 움직이면 지금 읽고 있는
+    // 과목 이름을 가리기 때문이다. 세로만 따라오게 하면 줄 사이를 옮겨 다닐 때
+    // 종이가 미끄러지듯 따라와서 훨씬 차분하다.
+    function aim(x, y){
+      var w = peek.offsetWidth || 260, h = peek.offsetHeight || 368;
+      var lo = w/2 + 18, hi = window.innerWidth - w/2 - 30;
+      tx = Math.min(Math.max(window.innerWidth * 0.72, lo), Math.max(lo, hi));
+      ty = Math.min(Math.max(y, h/2 + 14), window.innerHeight - h/2 - 14);
+    }
+
+    function loop(){
+      // 목표점을 천천히 따라가야 종이가 끌려오는 느낌이 난다
+      cx += (tx - cx) * 0.14;
+      cy += (ty - cy) * 0.14;
+      peek.style.left = cx.toFixed(1) + 'px';
+      peek.style.top  = cy.toFixed(1) + 'px';
+      if (live || Math.abs(tx-cx) > 0.5 || Math.abs(ty-cy) > 0.5){
+        raf = requestAnimationFrame(loop);
+      } else { raf = 0; }
+    }
+    function kick(){ if (!raf) raf = requestAnimationFrame(loop); }
+
+    rows.forEach(function(r){
+      r.addEventListener('pointerenter', function(ev){
+        if (ev.pointerType === 'touch') return;
+        pimg.src = r.dataset.thumb;
+        live = true;
+        aim(ev.clientX, ev.clientY);
+        if (!peek.classList.contains('on')){ cx = tx; cy = ty; }
+        peek.classList.add('on');
+        kick();
+      });
+      r.addEventListener('pointermove', function(ev){
+        if (!live) return;
+        aim(ev.clientX, ev.clientY); kick();
+      }, { passive:true });
+      r.addEventListener('pointerleave', function(){
+        live = false; peek.classList.remove('on');
+      });
+    });
+  }
+
+  /* ── 각 과목 사이트의 갱신 정보 ─────────────── */
+  // 전부 같은 오리진(<계정>.github.io)이라 그냥 fetch 하면 된다.
+  // PDF 뷰어가 아닌 사이트에는 manifest.json 이 없다 — 실패는 조용히 비운다.
+  var stamp = document.getElementById('stamp'), newest = '';
+  function dateOnly(s){ var m = /^\d{4}-\d{2}-\d{2}/.exec(s||''); return m ? m[0] : ''; }
+
+  Promise.all(rows.map(function(r){
+    return fetch('/' + r.dataset.repo + '/manifest.json', { cache:'no-store' })
+      .then(function(x){ if (!x.ok) throw 0; return x.json(); })
+      .then(function(m){
+        var el = r.querySelector('.meta'); if (!el) return;
+        var d = dateOnly(m.updated), p = m.pages || {}, bits = [];
+        // 회차를 세는 과목만 manifest 에 lectures 가 있다 — 있으면 맨 앞에 붙인다.
+        var lec = m.lectures;
+        if (lec && lec.count != null) {
+          bits.push(lec.count + '강');
+          var ld = /^(\d{4})-(\d{2})-(\d{2})$/.exec(lec.last || '');
+          if (ld) bits.push(+ld[2] + '/' + +ld[3] + ' 수업까지');
+        }
+        if (p.ko != null) bits.push('국문 ' + p.ko + 'p');
+        if (p.en != null) bits.push('영문 ' + p.en + 'p');
+        if (d) bits.push(d.replace(/-/g,'.'));
+        if (!bits.length) return;
+        el.textContent = bits.join('  ·  ');
+        el.className = 'meta fade';
+        if (d && d > newest) newest = d;
+      })
+      .catch(function(){});
+  })).then(function(){
+    if (!newest) return;
+    stamp.textContent = 'LAST UPDATED ' + newest.replace(/-/g,'.');
+    stamp.classList.add('on');
+  });
+})();
+</script>
+
+</body>
+</html>

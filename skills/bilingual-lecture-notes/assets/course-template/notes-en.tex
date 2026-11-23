@@ -1,0 +1,136 @@
+% !TEX program = xelatex
+% !TEX encoding = UTF-8 Unicode
+%
+% <Course name> --- lecture notes, English edition.  One continuous document,
+% ordered by topic.  Everything shared with the Korean edition is in
+% coursenotes.sty and figures.tex.
+% Build: ./build.sh   (latexmk -xelatex, three passes because of the ToC)
+%
+% Rules for adding a lecture (the same list heads notes-ko.tex):
+%   1. Put new material in the part whose topic it belongs to.  Open a new part
+%      with \partdivider only when a genuinely new topic starts.
+%   2. Section numbers run straight through all parts; never restart them, and
+%      never renumber a section that has been published (the site viewer keys
+%      on them).
+%   3. Put \lecturebreak[YYYY-MM-DD]{Lecture N} where that lecture's new
+%      material begins, then a \sourcenote saying what it rests on, and add one
+%      row to the lecture log below.
+%   4. Keep sections, equations, figures, theorem-like environments and every
+%      \label identical in order and name in the two editions.
+%   5. Update \lecdate and the "arc of the course" list.
+%
+\documentclass[11pt]{article}
+\usepackage{coursenotes}
+
+%% words inside figures (the Korean edition defines the same macros)
+\newcommand{\lblPosition}{position $x$}
+\newcommand{\lblConcentration}{$c(x,t)$}
+\newcommand{\lblSpreads}{width grows\\like $\sqrt{Dt}$}
+\input{figures}
+
+\coursename{Sample Course}
+\term{Fall 2027}
+\lectitle{Lecture Notes, Lectures 1--2}
+\lecdate{Updated 6 September 2027}
+\notesby{Student}
+
+\begin{document}
+\makelecheader
+
+% ===================================================================== front matter
+\section*{Course information}
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=3pt]
+  \item Meets Mon/Wed. Midterm and final dates as announced in the syllabus.
+  \item Grading as announced in the syllabus. Textbook: as announced.
+\end{itemize}
+
+\section*{The arc of the course}
+\begin{itemize}[leftmargin=1.2em,itemsep=1pt,topsep=3pt]
+  \item Part I --- Random walks and diffusion \hfill {\small[in progress]}
+  \item Part II --- Steady states \hfill {\small[planned: announced in Lecture 2]}
+\end{itemize}
+
+\section*{How these notes are organised}
+The notes are ordered by topic, not by date. A hairline carrying a lecture
+number in the right margin marks the point where each lecture began, and the
+grey line under it says what the notes for that lecture rest on. Material
+added while writing the notes (a missing step, a check) is set small with a
+$\blacktriangleright$ in the margin.
+
+\section*{Lecture log}
+{\small
+\begin{longtable}{@{}l l l r@{}}
+\toprule
+lecture & date & sections & page\\
+\midrule
+\endhead
+1 & Wed, 1 Sep 2027 & \S\ref{sec:walk} & \pageref{lec:2027-09-01}\\
+2 & Mon, 6 Sep 2027 & \S\ref{sec:diffusion} & \pageref{lec:2027-09-06}\\
+\bottomrule
+\end{longtable}}
+
+{\small\tableofcontents}
+
+% ===================================================================== Part I
+\partdivider{Part I --- Random walks and diffusion}
+
+\lecturebreak[2027-09-01]{Lecture 1}
+\sourcenote{handout 1 and the recording}
+\section{The random walk}\label{sec:walk}
+
+\begin{definition}\label{def:walk}
+A \keyword{random walk} on a line is a sequence of positions
+$x_n = \sum_{k=1}^{n} s_k$ whose steps $s_k=\pm a$ are independent and equally
+likely.
+\end{definition}
+
+Each step has mean zero and variance $a^2$, and variances of independent steps
+add, so
+\begin{equation}\label{eq:var}
+  \avg{x_n} = 0, \qquad \avg{x_n^2} = n a^2 .
+\end{equation}
+
+\scribe{The second result needs only that the steps are uncorrelated:
+$\avg{s_j s_k}=0$ for $j\neq k$ kills every cross term of $\avg{x_n^2}$.}
+
+% ---------------------------------------------------------------------------
+\lecturebreak[2027-09-06]{Lecture 2}
+\sourcenote{handout 2}
+\section{The diffusion equation}\label{sec:diffusion}
+
+With steps taken every $\tau$, write $t=n\tau$ and $D=a^2/2\tau$. Then
+\eqref{eq:var} reads $\avg{x^2}=2Dt$, and in the continuum limit the density
+of walkers obeys
+\begin{equation}\label{eq:diffeq}
+  \pd{c}{t} = D\,\frac{\partial^2 c}{\partial x^2}.
+\end{equation}
+Its solution for walkers that all start at the origin is
+\begin{equation}\label{eq:gauss}
+  c(x,t) = \frac{1}{\sqrt{4\pi D t}}\, e^{-x^2/4Dt},
+\end{equation}
+drawn in Figure~\ref{fig:diffusion}.
+
+\begin{figure}[ht]
+  \centering
+  \figDiffusion
+  \caption{The profile \eqref{eq:gauss} for $Dt=0.25$, $1$ and $4$ (solid,
+  dashed, dotted). The area stays $1$ while the width grows as $\sqrt{2Dt}$.}
+  \label{fig:diffusion}
+\end{figure}
+
+\begin{caution}[two conventions]\label{caut:dconv}
+Some texts define $D=a^2/\tau$ and write $\avg{x^2}=Dt$. Check which one a
+formula uses before combining it with \eqref{eq:diffeq}.
+\end{caution}
+
+% ===================================================================== Part II
+\partdivider{Part II --- Steady states}
+
+\lecturebreak[2027-09-08]{Planned}
+\section{Steady states and boundary conditions}\label{sec:steady}
+
+Written before the class from the posted outline; checked against the class
+afterwards.
+
+\phantomsection\label{lec:end}
+\end{document}
