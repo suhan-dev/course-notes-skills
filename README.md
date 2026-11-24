@@ -54,6 +54,9 @@ Claude Code:
 Or copy the folders under `skills/` into `~/.claude/skills/` or a project's `.claude/skills/`.
 Other agents: read [AGENTS.md](AGENTS.md) and [llms.txt](llms.txt).
 
+설치해서 잘 쓰고 계시다면 [저장소](https://github.com/suhan-dev/course-notes-skills)에 스타 하나 부탁드려요. /
+If the install is working for you, a star on [the repository](https://github.com/suhan-dev/course-notes-skills) helps.
+
 필요한 것 / Requirements: XeLaTeX with Korean support and the Nanum fonts (`skills/bilingual-lecture-notes/assets/course-template/tools/setup-container.sh` sets up a Debian/Ubuntu container), Python 3, Node 18+ with Playwright for the tests, poppler-utils, Ghostscript.
 
 ## 점검 / Checks
